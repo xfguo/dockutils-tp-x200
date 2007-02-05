@@ -1,0 +1,28 @@
+Dockutils
+=========
+
+Dockutils is a collection of scripts providing an infrastructure to easily
+trigger actions on docking/undocking requests for different laptops and
+vendors.
+
+dockhandler: This is the central point to start. Either the command line
+tool docking or an acpi event coming from the acpid daemon will execute
+this script.
+
+Provided infrastructure
+=======================
+
+docker: Command line tool to trigger dock/undock requests.
+
+hooks: Directory containing the different hooks for different vendor
+       laptops.
+
+hooks/thinkpad: Directory containing hooks for all Thinkpads (ibm)
+		notebooks. These hooks are triggered either through an
+		acpid event or when a Thinkpad model is found and docker
+		is used. Every Thinkpad has to use ibm_acpi for docking,
+		so theres one hook 50generic which does the ibm_acpi
+		handling.
+
+hooks/misc: Different scripts for laptops which don't have anything
+	    common.

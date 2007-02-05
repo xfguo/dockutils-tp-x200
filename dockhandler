@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+# Copyright (C) 2006 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+cd /usr/lib/dockutils
+
+HOOKDIR=
+ACTION=
+if [ "$LOGFILE" = "stdin" ]; then
+    LOGFILE=
+else
+    LOGFILE=/var/log/dockutils.log
+fi
+
+# mainly taken from the pm-utils project
+run_hooks(){
+    echo "$(date): running $1 hooks for event $2."
+    
+    files="hooks/$1/*[^~]"
+    if [ "$2" = "undock" ]; then
+	filea=($files)
+	filen=${#filea[*]}
+	while [ "$filen" -gt 0 ]; do
+	    let filen--
+	    file="${filea[$filen]}"
+	    if [ -x $file ]; then
+		$file $2
+	    fi
+	done
+    else
+	for file in $files ; do
+	    if [ -x $file ]; then
+		$file $2
+	    fi
+	done
+    fi
+}
+
+rm -f $LOGFILE
+if [ -n "$LOGFILE" ]; then
+    [ -f "$LOGFILE" ] && rm -f "$LOGFILE"
+		exec > "$LOGFILE" 2>&1
+fi
+
+if [ "$1" == "dock" -o "$1" == "undock" ]; then
+    ACTION=$1
+else
+    HOTKEY=$1
+    set $HOTKEY
+    EVENT=$1   # "ibm/hotkey"
+    ACPI=$2    # "HOTK"
+    WHAT=$3    # "00000080"
+    SERIAL=$4  # "0000100c" Fn+F12
+    
+    echo "EVENT: $EVENT , ACPI: $ACPI , WHAT: $WHAT, SERIAL: $SERIAL"
+    
+    declare -i VAL
+    VAL=0x$WHAT # hex -> decimal
+    declare -i SER
+    SER=0x$SERIAL # hex -> decimal
+
+    if [ "$EVENT" = "ibm/hotkey" ]; then
+	if [ "$SER" -eq 4105 ]; then # Fn+F9
+	    ACTION=undock
+	elif [ "$SER" -eq 4107 ]; then # Fn+F9
+	    ACTION=dock
+	fi
+    elif [ "$EVENT" = "ibm/dock" ]; then
+	case $VAL in
+	    0)  # X32 has strange dock code
+		[ "$SER" -eq 3 ] && ACTION=dock
+		;;
+	    1)  ACTION=dock ;;
+	    3)  ACTION=undock ;;
+	esac
+    fi
+fi
+
+export MODEL=`hal-get-property --udi /org/freedesktop/Hal/devices/computer --key smbios.system.version`
+
+if [ -n "`echo $MODEL | grep -i thinkpad`" ]; then
+    HOOKDIR=thinkpad
+else
+    HOOKDIR=misc
+fi
+
+if [ -z "$ACTION" ]; then
+    echo "Could not figure out event, neither dock nor undock"
+    exit 1
+fi
+
+run_hooks $HOOKDIR $ACTION
+exit $?

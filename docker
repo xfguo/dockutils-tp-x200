@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Copyright (C) 2006 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+help(){
+	echo "Usage: $0 (dock|undock)"
+	exit 1
+}
+
+if [ "$EUID" != "0" ]; then
+	echo "Must be run as root."
+	exit 1
+fi
+
+[ $# -lt 1 ] && help
+[ "$1" != "dock" -a "$1" != "undock" ] && help
+
+export LOGFILE=stdin
+
+/usr/lib/dockutils/dockhandler $1
+exit $?

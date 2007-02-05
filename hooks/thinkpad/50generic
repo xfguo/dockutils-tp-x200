@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Copyright (C) 2006 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+IBM_DOCKFILE=/proc/acpi/ibm/dock
+
+ibm_dock(){
+    echo ibm_dock
+    echo dock > $IBM_DOCKFILE
+}
+
+ibm_undock(){
+    echo ibm_undock
+    echo undock > $IBM_DOCKFILE
+}
+
+if [ "$1" = "dock" ]; then
+    ibm_dock
+
+elif [ "$1" = "undock" ]; then
+    ibm_undock
+fi

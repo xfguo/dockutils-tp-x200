@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Copyright (C) 2006 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+. common_functions
+
+[ "$MODEL" == "Thinkpad X60" ] && exit 0;
+
+if [ "$1" = "dock" ]; then
+    echo x60 dock
+    scan_scsi_hosts
+
+elif [ "$1" = "undock" ]; then
+    echo x60 undock
+    unregister_cdroms
+fi

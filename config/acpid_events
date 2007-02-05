@@ -1,0 +1,7 @@
+# dockutils
+#
+# Pass over all ibm_acpi events to the dockhandler to get dock/undock
+# requests
+
+event=ibm/.*
+action=/usr/lib/dockutils/dockhandler "%e"
