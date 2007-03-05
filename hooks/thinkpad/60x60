@@ -9,7 +9,8 @@
 
 . common_functions
 
-[ "$MODEL" == "Thinkpad X60" ] && exit 0;
+MODEL="`echo $MODEL | tr '[a-z]' '[A-Z]'`"
+[ "$MODEL" = "THINKPAD X60" ] || exit 0;
 
 if [ "$1" = "dock" ]; then
     echo x60 dock
