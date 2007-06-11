@@ -7,21 +7,17 @@
 # This file is released under the GPLv2.
 #
 
-IBM_DOCKFILE=/proc/acpi/ibm/dock
-
-ibm_dock(){
-    echo ibm_dock
-    echo dock > $IBM_DOCKFILE
-}
-
-ibm_undock(){
-    echo ibm_undock
-    echo undock > $IBM_DOCKFILE
-}
+SYS_PATH=/sys/devices/platform
 
 if [ "$1" = "dock" ]; then
-    ibm_dock
+    echo "docking should have been done automatically by the dock driver..."
 
 elif [ "$1" = "undock" ]; then
-    ibm_undock
+    for I in $SYS_PATH/dock*; do
+	DOCKED=`cat $I/docked`
+	if [ "$DOCKED" = "1" ]; then
+	    echo undocking $I
+	    echo -n 1 > $I/undock
+	fi
+    done
 fi
