@@ -49,6 +49,21 @@ fi
 
 if [ "$1" == "dock" -o "$1" == "undock" ]; then
     ACTION=$1
+
+elif [ -z "$1" ]; then
+    echo trying to figure it out ourself
+    SYS_PATH=/sys/devices/platform
+
+    for I in $SYS_PATH/dock*; do
+	DOCKED=`cat $I/docked`
+	if [ "$DOCKED" = "1" ]; then
+	    ACTION=dock
+	    break
+	else
+	    ACTION=undock
+	fi
+    done
+
 else
     HOTKEY=$1
     set $HOTKEY
