@@ -1,5 +1,6 @@
 SCRIPTDIR = /usr/lib/dockutils
 HOOKDIR = ${SCRIPTDIR}/hooks
+PM_UTILS_HOOKDIR=/usr/lib/pm-utils/sleep.d
 
 install:
 	mkdir -p ${DESTDIR}${SCRIPTDIR}
@@ -10,6 +11,7 @@ install:
 	install common_functions ${DESTDIR}${SCRIPTDIR}
 	install dockhandler ${DESTDIR}${SCRIPTDIR}
 	install hooks/thinkpad/* ${DESTDIR}${HOOKDIR}/thinkpad
+	install misc/24dock ${DESTDIR}${PM_UTILS_HOOKDIR}
 	mkdir -p ${DESTDIR}/etc/acpi/events
 	install -m 644 config/acpid_events ${DESTDIR}/etc/acpi/events/dockutils_events
 
