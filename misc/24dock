@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$1" in
+	hibernate|suspend)
+		[ -x /usr/sbin/docker ] && /usr/sbin/docker undock
+		;;
+	thaw|resume)
+		[ -x /usr/sbin/docker ] && /usr/sbin/docker dock
+		;;
+	*)
+		;;
+esac
+
+exit $?
