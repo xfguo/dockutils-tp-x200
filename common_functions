@@ -8,20 +8,22 @@
 #
 
 scan_scsi_hosts() {
-    DEVS=`hal-find-by-property --key linux.subsystem --string scsi_host`
+    DEVS=`find /sys/class/scsi_host -name scan`
 
     for I in $DEVS; do
-	SYS_PATH=`/usr/bin/hal-get-property --udi $I --key linux.sysfs_path`
+	echo checking $I
 	TARGET=0
-	for J in $SYS_PATH/device/target*; do
+	for J in `dirname $I`/device/target*; do
 	    test -e $J && TARGET=1
 	done
 	# if we had undocked properly before, the target is no longer there.
 	# this avoids the rescanning of all devices (builtin disk etc).
 	if [ $TARGET = 0 ]; then
             # rescan the host
-	    echo "rescanning $SYS_PATH"
-	    echo "- - -" > $SYS_PATH/scan
+	    echo "rescanning $I"
+	    echo "- - -" > $I
+	else
+	    echo skipping $I host
 	fi
     done
 }
