@@ -10,7 +10,6 @@
 . common_functions
 
 MODEL="`echo $MODEL | tr '[a-z]' '[A-Z]'`"
-MODEL="THINKPAD X40"
 [ "$MODEL" = "THINKPAD X60" ] || [ "$MODEL" = "THINKPAD X40" ] || exit 0;
 
 if [ "$1" = "dock" ]; then
